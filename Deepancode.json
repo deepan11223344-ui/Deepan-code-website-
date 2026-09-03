@@ -1,0 +1,93 @@
+{
+  "$schema": "./Deepancode.schema.json",
+  "version": "1.0.0",
+  "defaultProvider": "openrouter",
+  "defaultModel": "cohere/north-mini-code:free",
+  "providers": {
+    "openrouter": {
+      "enabled": true,
+      "baseURL": "https://openrouter.ai/api/v1",
+      "apiKey": "",
+  "defaultModel": "openrouter/free",
+      "freeModels": [
+        "openrouter/free",
+        "openai/gpt-oss-120b:free",
+        "cohere/north-mini-code:free",
+        "google/gemma-4-31b-it:free",
+        "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "nvidia/nemotron-3-super-120b-a12b:free",
+        "qwen/qwen3-coder:free",
+        "meta-llama/llama-3.3-70b-instruct:free"
+      ],
+      "tokenUsage": {
+        "enabled": true,
+        "dailyTokenLimit": 500000,
+        "monthlyTokenLimit": 10000000,
+        "resetPeriod": "daily",
+        "warningThreshold": 0.8,
+        "fallbackProvider": "opencodeZen"
+      },
+      "rateLimits": {
+        "requestsPerMinute": 20,
+        "requestsPerDay": 50
+      }
+    },
+    "opencodeZen": {
+      "enabled": true,
+      "baseURL": "https://opencode.ai/zen/v1",
+      "apiKey": "",
+      "defaultModel": "big-pickle",
+      "freeModels": [
+        "mimo-v2.5-free",
+        "nemotron-3-ultra-free",
+        "north-mini-code-free",
+        "deepseek-v4-flash-free",
+        "big-pickle"
+      ],
+      "tokenUsage": {
+        "enabled": true,
+        "dailyTokenLimit": 800000,
+        "monthlyTokenLimit": 15000000,
+        "resetPeriod": "daily",
+        "warningThreshold": 0.75,
+        "fallbackProvider": "openrouter"
+      },
+      "rateLimits": {
+        "requestsPerDay": 100
+      }
+    }
+  },
+  "models": {
+    "coding": {
+      "provider": "openrouter",
+      "modelId": "cohere/north-mini-code:free",
+      "maxTokens": 8192,
+      "contextWindow": 64000
+    },
+    "reasoning": {
+      "provider": "openrouter",
+      "modelId": "openai/gpt-oss-120b:free",
+      "maxTokens": 16384
+    }
+  },
+  "tokenUsage": {
+    "enabled": true,
+    "dailyTokenLimit": 1000000,
+    "monthlyTokenLimit": 20000000,
+    "resetPeriod": "daily",
+    "warningThreshold": 0.85,
+    "fallbackProvider": "openrouter"
+  },
+  "agent": {
+    "name": "OpenCode Terminal Agent",
+    "systemPrompt": "You are a helpful terminal-based AI coding agent. Use free LLM providers efficiently. Always respect token limits and suggest the cheapest/free model.",
+    "maxHistory": 20,
+    "temperature": 0.6,
+    "autoSwitchProvider": true
+  },
+  "ui": {
+    "theme": "dark",
+    "showTokenUsage": true,
+    "showRateLimits": true
+  }
+}

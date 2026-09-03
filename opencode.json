@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "skill": {
+      "gsap": "ask"
+    }
+  },
+  "skills": [
+    {
+      "name": "gsap",
+      "folder": "./.opencode/skills/gsap"
+    }
+  ]
+}

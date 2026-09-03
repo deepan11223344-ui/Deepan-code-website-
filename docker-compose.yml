@@ -1,0 +1,33 @@
+services:
+  deepans-code:
+    build: .
+    container_name: deepans-code
+    restart: unless-stopped
+    # CLI mode exposes no ports by default. Uncomment to run API/WS servers
+    # (override command, e.g. `command: ["python","-m","deepans_code.status_server"]`).
+    #ports:
+    #  - "8080:8080"
+    #  - "8765:8765"
+    volumes:
+      - deepans-config:/home/deepans/.deepans-code
+      - ${WORKSPACE:-.}:/workspace
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENCODE_API_KEY=${OPENCODE_API_KEY:-}
+      - DEEPANCODE_API_TOKEN=${DEEPANCODE_API_TOKEN:-}
+      - DEEPANCODE_CONFIG_DIR=/home/deepans/.deepans-code
+    working_dir: /workspace
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  deepans-config:
+    driver: local

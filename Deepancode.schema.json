@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/deepan/deepans-code/blob/main/Deepancode.schema.json",
+  "title": "DeepanCode runtime configuration (Deepancode.json)",
+  "type": "object",
+  "required": ["defaultProvider", "providers"],
+  "properties": {
+    "version": { "type": "string" },
+    "defaultProvider": { "type": "string" },
+    "defaultModel": { "type": "string" },
+    "providers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["baseURL"],
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "baseURL": { "type": "string", "format": "uri" },
+          "apiKey": { "type": "string" },
+          "defaultModel": { "type": "string" },
+          "freeModels": { "type": "array", "items": { "type": "string" } },
+          "tokenUsage": { "type": "object" },
+          "rateLimits": { "type": "object" }
+        }
+      }
+    },
+    "models": { "type": "object" },
+    "tokenUsage": { "type": "object" },
+    "agent": { "type": "object" },
+    "ui": { "type": "object" }
+  }
+}
