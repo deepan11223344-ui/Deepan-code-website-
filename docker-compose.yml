@@ -28,6 +28,38 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # Self-hosted web app: FastAPI + vendored UI on loopback. Put a TLS
+  # reverse proxy (Caddy/nginx) in front for internet exposure — never
+  # publish 8080 directly. Secrets via environment, never in the file.
+  deepans-web:
+    build: .
+    container_name: deepans-web
+    restart: unless-stopped
+    command: ["python", "-m", "uvicorn", "apps.api.main:app",
+              "--host", "127.0.0.1", "--port", "8080", "--workers", "1"]
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - deepans-config:/home/deepans/.deepans-code
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENCODE_API_KEY=${OPENCODE_API_KEY:-}
+      - DEEPANCODE_API_TOKEN=${DEEPANCODE_API_TOKEN:-}
+      - DEEPANCODE_JWT_SECRET=${DEEPANCODE_JWT_SECRET:?set-a-32-char-secret}
+      - DEEPANCODE_INVITE_CODE=${DEEPANCODE_INVITE_CODE:?set-an-invite-code}
+      - DEEPANCODE_ALLOW_SIGNUP=${DEEPANCODE_ALLOW_SIGNUP:-true}
+      - DEEPANCODE_WEB_SAFE_TOOLS=1
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   deepans-config:
     driver: local

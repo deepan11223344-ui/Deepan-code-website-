@@ -23,6 +23,7 @@ RUN pip install --no-cache-dir --require-hashes -r requirements.lock && \
 
 # Copy application code (only what the app needs)
 COPY deepans_code/ deepans_code/
+COPY apps/ apps/
 COPY Deepancode.json .
 COPY opencode.json .
 COPY claude-fable-5.md .

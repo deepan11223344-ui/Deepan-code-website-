@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>Log in — DeepanCode</title>
+<link rel="stylesheet" href="/static/css/app.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<main class="authwrap">
+  <div class="card" id="card">
+    <h1>Welcome <span class="grad">back</span></h1>
+    <p class="sub">Self-hosted. Nothing leaves this server.</p>
+    <div id="step-creds">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" maxlength="254">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" maxlength="256">
+      <div class="err" id="err"></div>
+      <button class="btn" id="loginBtn">Log in</button>
+      <p class="muted">Need an account? Ask your admin for an invite code.</p>
+      <p class="muted"><a href="#" id="showSignup">Sign up with invite code</a></p>
+    </div>
+    <div id="step-signup" class="hidden" hidden>
+      <label for="s-email">Email</label>
+      <input id="s-email" type="email" autocomplete="username" maxlength="254">
+      <label for="s-password">Password (12+ characters)</label>
+      <input id="s-password" type="password" autocomplete="new-password" maxlength="256">
+      <label for="invite">Invite code</label>
+      <input id="invite" type="password" autocomplete="off" maxlength="256">
+      <div class="err" id="err2"></div>
+      <button class="btn" id="signupBtn">Create account</button>
+      <p class="muted"><a href="#" id="showLogin">Back to log in</a></p>
+    </div>
+    <div id="step-totp" class="hidden" hidden>
+      <label for="code">Two-factor code</label>
+      <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="12">
+      <div class="err" id="err3"></div>
+      <button class="btn" id="totpBtn">Verify</button>
+    </div>
+  </div>
+</main>
+<script src="/static/vendor/gsap.min.js"></script>
+<script src="/static/js/auth.js"></script>
+</body>
+</html>

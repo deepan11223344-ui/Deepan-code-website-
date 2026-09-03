@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="DeepanCode — self-hosted terminal-grade AI coding agent on the web. Your code never leaves your server.">
+<meta name="referrer" content="same-origin">
+<title>DeepanCode — Self-hosted AI coding agent</title>
+<link rel="stylesheet" href="/static/css/app.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<nav class="topbar">
+  <a class="logo" href="/">Deepan<span>Code</span></a>
+  <span>
+    <a class="btn ghost" href="/login">Log in</a>
+    <a class="btn" href="/login">Get started</a>
+  </span>
+</nav>
+<header class="hero">
+  <h1 class="reveal">Your code stays <span class="grad">on your server.</span></h1>
+  <p class="reveal">DeepanCode is a self-hosted AI coding agent with a Claude-class interface — streaming chat, tool execution, artifacts — and zero third parties. No CDN, no trackers, no data leaving your machine.</p>
+  <p class="reveal"><a class="btn" href="/chat">Open the app</a><a class="btn ghost" href="/login">Log in</a></p>
+  <div class="mock reveal" aria-hidden="true">
+    <div class="row"><div class="bubble me">Refactor auth.py to use Argon2</div></div>
+    <div class="row"><div class="bubble">Done — edited <b>auth.py</b>, 3 tests green. Artifact on the right.</div></div>
+  </div>
+</header>
+<section class="feats">
+  <div class="feat reveal"><h3>Streaming agent</h3><p>Token-by-token responses with live tool calls over your own WebSocket.</p></div>
+  <div class="feat reveal"><h3>Artifacts panel</h3><p>Every file the agent touches opens beside the chat, Claude-style.</p></div>
+  <div class="feat reveal"><h3>Invite-only access</h3><p>No public signup. Optional 2FA, lockouts, and a full audit log.</p></div>
+  <div class="feat reveal"><h3>Audited supply chain</h3><p>Hash-pinned lockfile, digest-pinned image, vendored animations.</p></div>
+</section>
+<script src="/static/vendor/gsap.min.js"></script>
+<script src="/static/vendor/ScrollTrigger.min.js"></script>
+<script src="/static/js/landing.js"></script>
+</body>
+</html>

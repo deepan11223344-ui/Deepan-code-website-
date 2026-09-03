@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="same-origin">
+<title>Chat — DeepanCode</title>
+<link rel="stylesheet" href="/static/css/app.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="sidebar" aria-label="Conversations">
+    <header>
+      <button class="ibtn" id="newChat">+ New chat</button>
+      <button class="ibtn" id="toggleSide" title="Collapse">«</button>
+    </header>
+    <div class="search"><input id="search" placeholder="Search chats" maxlength="200"></div>
+    <div class="clist" id="clist"></div>
+    <footer>
+      <div id="usage">–</div>
+      <div><a href="#" id="openSettings">Settings</a> · <a href="#" id="logout">Log out</a></div>
+    </footer>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <button class="ibtn" id="showSide" title="Sidebar">☰</button>
+      <select id="modelSel" aria-label="Model"></select>
+      <span class="badge" id="connBadge">connecting…</span>
+    </div>
+    <div id="stream" aria-live="polite"></div>
+    <div class="composer">
+      <div class="box">
+        <textarea id="input" rows="1" placeholder="Ask anything…" maxlength="32768"></textarea>
+        <button class="send" id="sendBtn">Send</button>
+      </div>
+    </div>
+  </main>
+  <aside class="arts" id="arts" aria-label="Artifact">
+    <header><span id="artsTitle">Artifact</span><button class="ibtn" id="closeArts">×</button></header>
+    <pre id="artsBody"></pre>
+  </aside>
+</div>
+<div class="modal" id="settingsModal">
+  <div class="card">
+    <h1>Settings</h1>
+    <p class="sub">Stored on your server only.</p>
+    <div class="row2">
+      <div><label for="set-provider">Provider</label><select id="set-provider"></select></div>
+      <div><label for="set-mode">Mode</label><select id="set-mode"></select></div>
+    </div>
+    <div class="row2">
+      <div><label for="set-effort">Effort</label><select id="set-effort"></select></div>
+      <div><label for="set-theme">Theme</label>
+        <select id="set-theme"><option>dark</option><option>light</option><option>midnight</option><option>ocean</option></select>
+      </div>
+    </div>
+    <label for="set-key">Provider API key (AES-encrypted at rest)</label>
+    <input id="set-key" type="password" autocomplete="off" maxlength="512" placeholder="Saved keys never leave this server">
+    <div class="row2">
+      <div><label for="set-thinking">Thinking display</label>
+        <select id="set-thinking"><option value="on">on</option><option value="off">off</option></select>
+      </div>
+      <div><label>&nbsp;</label><button class="ibtn" id="saveSettings">Save</button></div>
+    </div>
+    <h1>Two-factor auth</h1>
+    <p class="sub" id="totpState">–</p>
+    <div id="totpSetup" hidden>
+      <p class="sub" id="totpSecret"></p>
+      <label for="totpCode">Confirm code</label>
+      <input id="totpCode" inputmode="numeric" maxlength="12">
+      <button class="ibtn" id="totpEnable">Enable 2FA</button>
+    </div>
+    <button class="ibtn" id="totpStart">Set up 2FA</button>
+    <div class="err" id="setErr"></div>
+    <button class="btn ghost" id="closeSettings">Close</button>
+  </div>
+</div>
+<div id="toasts"></div>
+<script src="/static/vendor/gsap.min.js"></script>
+<script src="/static/js/chat.js"></script>
+</body>
+</html>
