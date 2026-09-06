@@ -55,6 +55,24 @@
       "rateLimits": {
         "requestsPerDay": 100
       }
+    },
+    "experientiallabs": {
+      "enabled": true,
+      "baseURL": "https://api.experientiallabs.ai/v1",
+      "apiKey": "xpl_106d7e8bb75256eba9603f65f1cc78a02f1f4824",
+      "defaultModel": "claude-fable-5.1",
+      "freeModels": [],
+      "tokenUsage": {
+        "enabled": true,
+        "dailyTokenLimit": 1000000,
+        "monthlyTokenLimit": 20000000,
+        "resetPeriod": "daily",
+        "warningThreshold": 0.8
+      },
+      "rateLimits": {
+        "requestsPerMinute": 20,
+        "requestsPerDay": 100
+      }
     }
   },
   "models": {

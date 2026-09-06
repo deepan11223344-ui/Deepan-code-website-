@@ -98,12 +98,21 @@ def search_web(query: str, max_results: int = 5, use_cache: bool = True) -> List
             if time.time() - cached_time < CACHE_TTL:
                 return cached_results
 
+    # Primary: duckduckgo-search library (most reliable)
+    results = _search_ddgs_lib(query, max_results)
+    if results:
+        if use_cache:
+            _search_cache[_cache_key(query, max_results)] = (time.time(), results)
+        return results
+
+    # Fallback: SearXNG public instances
     results = _search_searxng(query, max_results)
     if results:
         if use_cache:
             _search_cache[_cache_key(query, max_results)] = (time.time(), results)
         return results
 
+    # Fallback: DuckDuckGo HTML scraping
     results = _search_duckduckgo(query, max_results)
     if use_cache and results:
         _search_cache[_cache_key(query, max_results)] = (time.time(), results)
@@ -136,6 +145,26 @@ def _search_searxng(query: str, max_results: int) -> List[Dict]:
             logger.debug(f"SearXNG {instance} failed: {e}")
             continue
     return []
+
+
+def _search_ddgs_lib(query: str, max_results: int) -> List[Dict]:
+    """Search using the ddgs Python library (most reliable)."""
+    try:
+        from ddgs import DDGS
+        results = []
+        with DDGS(timeout=10) as ddgs:
+            for r in ddgs.text(query, max_results=max_results):
+                results.append({
+                    "title": r.get("title", ""),
+                    "url": r.get("href", ""),
+                    "snippet": r.get("body", "")[:200],
+                    "engine": "duckduckgo",
+                    "score": max_results - len(results),
+                })
+        return results
+    except Exception as e:
+        logger.debug(f"ddgs library failed: {e}")
+        return []
 
 
 def _search_duckduckgo(query: str, max_results: int) -> List[Dict]:

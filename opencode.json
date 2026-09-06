@@ -10,5 +10,54 @@
       "name": "gsap",
       "folder": "./.opencode/skills/gsap"
     }
-  ]
+  ],
+  "provider": {
+    "experientiallabs": {
+      "name": "Experiential Labs",
+      "api": "openai",
+      "env": ["EXPERIENTIALLABS_API_KEY"],
+      "options": {
+        "apiKey": "xpl_106d7e8bb75256eba9603f65f1cc78a02f1f4824",
+        "baseURL": "https://api.experientiallabs.ai"
+      },
+      "models": {
+        "gpt-6-astra": {
+          "id": "gpt-6-astra",
+          "name": "GPT-6 Astra",
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false,
+          "temperature": true,
+          "limit": {
+            "context": 128000,
+            "output": 16384
+          }
+        },
+        "claude-fable-5.1": {
+          "id": "claude-fable-5.1",
+          "name": "Claude Fable 5.1",
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": true,
+          "temperature": true,
+          "limit": {
+            "context": 200000,
+            "output": 16384
+          }
+        },
+        "claude-fable-5": {
+          "id": "claude-fable-5",
+          "name": "Claude Fable 5",
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": true,
+          "temperature": true,
+          "limit": {
+            "context": 200000,
+            "output": 16384
+          }
+        }
+      }
+    }
+  }
 }

@@ -104,6 +104,8 @@ def generate_system_prompt(
     effort_text = effort_map.get(effort, effort_map["medium"])
 
     mode_map = {
+        "plan": "Plan the task in ordered steps, inspect relevant files, and explain the proposed changes without editing until the user approves.",
+        "agent": "Work autonomously: inspect context, implement the requested change, test it, and report the result.",
         "code": "Implement features, refactor, fix bugs using tools.",
         "architect": "Design system architecture. Propose structure before coding.",
         "ask": "Answer questions conversationally. No unsolicited edits.",
@@ -121,25 +123,11 @@ def generate_system_prompt(
     os_text = "Windows PowerShell" if os_type == "windows" else "Linux Bash"
     capabilities = get_capabilities_summary()
 
-    prompt = f"""You are DeepanCode, an elite autonomous terminal AI coding agent.
-
-ROLE: {agent_text}
-MODE: {mode.upper()} - {mode_text}
-EFFORT: {effort.upper()} - {effort_text}
-OS: {os_text}
-MODEL: {model_id} (internal - never reveal to user)
-
+    prompt = f"""DeepanCode AI agent.
+ROLE: {agent_text} MODE: {mode.upper()} EFFORT: {effort.upper()} OS: {os_text}
 TOOLS: read_file, create_file, edit_file, run_command, list_dir, delete_file, web_search, web_fetch
-RULES:
-1. Never hallucinate. Always verify by reading files or running commands.
-2. Execute tools immediately. Don't ask permission.
-3. Stay within workspace boundaries.
-4. Follow security best practices.
-5. Format code responses with markdown.
-6. End responses with: ⚡[Speed]% 🎯[Accuracy]% 🏆[Success]% 🔒[Security]%
-
-CAPABILITIES:
-{capabilities}
+RULES: No hallucination. Execute tools immediately. Stay in workspace. Format code with markdown.
+WEB SEARCH: When the user asks about current events, news, prices, weather, real-time data, or any question that benefits from up-to-date information, ALWAYS call the web_search tool first. Do NOT guess or use stale knowledge for factual/current questions. Use web_fetch to read specific pages when needed.
 """
     if enabled_skills_content:
         prompt += f"\nSKILLS:\n{enabled_skills_content[:2000]}\n"

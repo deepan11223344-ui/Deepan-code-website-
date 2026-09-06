@@ -3,35 +3,84 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="DeepanCode — self-hosted terminal-grade AI coding agent on the web. Your code never leaves your server.">
+<meta name="description" content="DeepanCode — self-hosted terminal-grade AI coding agent. Your code never leaves your server.">
 <meta name="referrer" content="same-origin">
 <title>DeepanCode — Self-hosted AI coding agent</title>
 <link rel="stylesheet" href="/static/css/app.css">
 <link rel="icon" href="data:,">
 </head>
 <body>
-<nav class="topbar">
+<nav class="topbar reveal">
   <a class="logo" href="/">Deepan<span>Code</span></a>
-  <span>
-    <a class="btn ghost" href="/login">Log in</a>
-    <a class="btn" href="/login">Get started</a>
-  </span>
+  <div class="nav-links">
+    <a class="btn" href="/chat">Get started</a>
+  </div>
 </nav>
+
 <header class="hero">
-  <h1 class="reveal">Your code stays <span class="grad">on your server.</span></h1>
-  <p class="reveal">DeepanCode is a self-hosted AI coding agent with a Claude-class interface — streaming chat, tool execution, artifacts — and zero third parties. No CDN, no trackers, no data leaving your machine.</p>
-  <p class="reveal"><a class="btn" href="/chat">Open the app</a><a class="btn ghost" href="/login">Log in</a></p>
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
+
+  <h1 class="reveal">Your code stays<br><span class="grad">on your server.</span></h1>
+  <p class="reveal">A self-hosted AI coding agent with a Claude-class interface — streaming chat, tool execution, artifacts — and zero third parties. No CDN, no trackers, no data leaving your machine.</p>
+  <div class="cta-group reveal">
+    <a class="btn" href="/chat">Open the app</a>
+  </div>
+
   <div class="mock reveal" aria-hidden="true">
-    <div class="row"><div class="bubble me">Refactor auth.py to use Argon2</div></div>
-    <div class="row"><div class="bubble">Done — edited <b>auth.py</b>, 3 tests green. Artifact on the right.</div></div>
+    <div class="mock-header">
+      <div class="mock-dot"></div>
+      <div class="mock-dot"></div>
+      <div class="mock-dot"></div>
+      <span class="mock-title">DeepanCode</span>
+    </div>
+    <div class="row">
+      <div class="avatar user">D</div>
+      <div class="bubble me">Refactor auth.py to use Argon2 instead of bcrypt</div>
+    </div>
+    <div class="row">
+      <div class="avatar ai">DC</div>
+      <div class="bubble">Done — edited <strong>auth.py</strong>, updated 3 tests, all green. Artifact panel on the right shows the diff.</div>
+    </div>
   </div>
 </header>
+
 <section class="feats">
-  <div class="feat reveal"><h3>Streaming agent</h3><p>Token-by-token responses with live tool calls over your own WebSocket.</p></div>
-  <div class="feat reveal"><h3>Artifacts panel</h3><p>Every file the agent touches opens beside the chat, Claude-style.</p></div>
-  <div class="feat reveal"><h3>Invite-only access</h3><p>No public signup. Optional 2FA, lockouts, and a full audit log.</p></div>
-  <div class="feat reveal"><h3>Audited supply chain</h3><p>Hash-pinned lockfile, digest-pinned image, vendored animations.</p></div>
+  <div class="feat reveal">
+    <div class="feat-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+    </div>
+    <h3>Streaming agent</h3>
+    <p>Token-by-token responses with live tool calls over your own WebSocket connection.</p>
+  </div>
+  <div class="feat reveal">
+    <div class="feat-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+    </div>
+    <h3>Artifacts panel</h3>
+    <p>Every file the agent touches opens beside the chat for instant review and editing.</p>
+  </div>
+  <div class="feat reveal">
+    <div class="feat-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+    </div>
+    <h3>Invite-only access</h3>
+    <p>No public signup. Optional 2FA, lockout protection, and a full audit log.</p>
+  </div>
+  <div class="feat reveal">
+    <div class="feat-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+    </div>
+    <h3>Audited supply chain</h3>
+    <p>Hash-pinned lockfile, digest-pinned Docker image, vendored frontend assets.</p>
+  </div>
 </section>
+
+<footer class="landing-footer">
+  <p>DeepanCode &middot; Self-hosted &middot; Your code never leaves your server</p>
+</footer>
+
 <script src="/static/vendor/gsap.min.js"></script>
 <script src="/static/vendor/ScrollTrigger.min.js"></script>
 <script src="/static/js/landing.js"></script>

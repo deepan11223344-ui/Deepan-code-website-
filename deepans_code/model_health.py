@@ -50,7 +50,7 @@ def check_model_health(model_id: str, api_key: str, provider: str = "openrouter"
 def _check_openrouter(model_id: str, api_key: str) -> Dict[str, Any]:
     try:
         with httpx.Client(timeout=10) as client:
-            resp = client.get(
+            resp = client.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers={"Authorization": f"Bearer {api_key}"},
                 json={
@@ -72,8 +72,8 @@ def _check_openrouter(model_id: str, api_key: str) -> Dict[str, Any]:
 def _check_opencode(model_id: str, api_key: str) -> Dict[str, Any]:
     try:
         with httpx.Client(timeout=10) as client:
-            resp = client.get(
-                "https://opencodezen.com/api/v1/chat/completions",
+            resp = client.post(
+                "https://opencode.ai/zen/v1/chat/completions",
                 headers={"Authorization": f"Bearer {api_key}"},
                 json={
                     "model": model_id,
@@ -115,11 +115,6 @@ def get_model_context_window(model_id: str) -> int:
     if "gpt-4" in lowered:
         return 128000
     if "gemini" in lowered:
-        return 1000000
-    return 128000
-    if "gpt-5" in model_id.lower():
-        return 400000
-    if "gemini" in model_id.lower():
         return 1000000
     return 128000
 

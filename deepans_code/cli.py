@@ -1141,10 +1141,6 @@ def print_status_bar_right(token_display, percentage, prompt_tokens=0, completio
     console.print(status_line)
 
 
-if __name__ == "__main__":
-    run_cli()
-
-
 def search_models_providers(query, limit=50):
     """Search through available models and providers (complete results, capped)."""
     results = []
@@ -1181,3 +1177,7 @@ def search_models_providers(query, limit=50):
             break
 
     return unique_results
+
+
+if __name__ == "__main__":
+    run_cli()

@@ -131,7 +131,7 @@ async def handle_message(websocket, message_str: str):
                 return
 
             agent = Agent(conversation_id=conv_id)
-            config_mgr.reload()
+            config_mgr.load(config_mgr.config_path)
 
             async for step_type, content in _stream_to_async(agent, user_input):
                 await websocket.send(json.dumps({
@@ -170,7 +170,7 @@ async def handle_message(websocket, message_str: str):
 async def _stream_to_async(agent, user_input):
     """Wrap synchronous generator into async generator."""
     import concurrent.futures
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
 
     def run_stream():
         steps = []

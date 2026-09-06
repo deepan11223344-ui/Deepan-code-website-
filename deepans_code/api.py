@@ -3,6 +3,8 @@ REST API + WebSocket endpoint for DeepanCode.
 Provides HTTP API for chat, conversations, health, and status.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import os

@@ -25,10 +25,10 @@ from deepans_code.token_usage import (
 logger = logging.getLogger("deepans_code.client")
 
 # Retry configuration
-MAX_RETRIES = 3
-RETRY_DELAY_BASE = 2  # seconds
+MAX_RETRIES = 2
+RETRY_DELAY_BASE = 1  # seconds
 RETRYABLE_STATUS_CODES = {500, 501, 502, 503, 504, 507, 508}
-MAX_RETRY_BUDGET = 10  # max consecutive-failure retries before giving up
+MAX_RETRY_BUDGET = 6  # max consecutive-failure retries before giving up
 
 # Provider fallback mapping
 PROVIDER_FALLBACK = {
@@ -41,7 +41,7 @@ class LLMClient:
     """Unified client for OpenRouter and OpenCode Zen APIs with retry logic."""
 
     def __init__(self):
-        self.timeout = 60.0
+        self.timeout = 20.0
         self._client = None
         self._consecutive_failures = {}  # Track consecutive failures per provider
         self._cooldown_until = {}  # Track cooldown timestamps per provider
@@ -107,17 +107,14 @@ class LLMClient:
         """Get or create reusable HTTP client with connection pooling."""
         if self._client is None or self._client.is_closed:
             limits = httpx.Limits(
-                max_connections=10,
-                max_keepalive_connections=5,
-                keepalive_expiry=30,
+                max_connections=20,
+                max_keepalive_connections=10,
+                keepalive_expiry=60,
             )
-            # httpx.HTTPTransport has no `retries` kwarg; retries are
-            # handled explicitly by the caller's retry loop with backoff.
             transport = httpx.HTTPTransport(limits=limits)
             self._client = httpx.Client(
                 timeout=self.timeout,
                 transport=transport,
-                # Do not forward Authorization across hosts on redirect.
                 follow_redirects=False,
             )
         return self._client
@@ -167,14 +164,14 @@ class LLMClient:
 
     def _get_retry_delay(self, attempt: int) -> float:
         """Calculate retry delay with exponential backoff + jitter (monotonic, capped)."""
-        base = RETRY_DELAY_BASE ** min(max(int(attempt), 0), 5)
-        return base + random.uniform(0, 1.0)
+        base = 0.5 ** min(max(int(attempt), 0), 3)
+        return base + random.uniform(0, 0.3)
 
     def _sleep_backoff(self, attempt: int, error: Exception) -> None:
-        capped = min(max(int(attempt), 0), 5)
+        capped = min(max(int(attempt), 0), 3)
         is_429 = isinstance(error, httpx.HTTPStatusError) and error.response.status_code == 429
         if is_429:
-            time.sleep(min(5 * (2 ** (capped % MAX_RETRIES)), 60) + random.uniform(0, 1.0))
+            time.sleep(min(2 * (2 ** (capped % MAX_RETRIES)), 15) + random.uniform(0, 0.5))
         else:
             time.sleep(self._get_retry_delay(capped))
 
@@ -334,8 +331,9 @@ class LLMClient:
                 payload = {
                     "model": self._get_model_id(model, current_provider),
                     "messages": messages,
-                    "temperature": 0.1,
-                    "max_tokens": 4096
+                    "temperature": 0.3,
+                    "max_tokens": 8192,
+                    "top_p": 0.95
                 }
 
                 if tools:
@@ -373,7 +371,10 @@ class LLMClient:
                 self._sleep_backoff(attempt, e)
 
         # All retries failed - provide helpful error message
-        raise self._final_error(provider, model, last_error)
+        error_text = str(last_error or "unknown provider error")
+        if isinstance(last_error, (httpx.ConnectError, httpx.ConnectTimeout)):
+            error_text = f"Could not connect to provider '{provider}'. Check the API key, provider endpoint, and internet connection."
+        raise self._final_error(provider, model, Exception(error_text))
 
     def chat_completion_stream(self, messages, tools=None, model=None, provider=None):
         """Send a chat completion request (streaming) with retry logic and auto-fallback."""
@@ -427,8 +428,9 @@ class LLMClient:
                 payload = {
                     "model": self._get_model_id(model, current_provider),
                     "messages": messages,
-                    "temperature": 0.1,
-                    "max_tokens": 4096,
+                    "temperature": 0.3,
+                    "max_tokens": 8192,
+                    "top_p": 0.95,
                     "stream": True
                 }
 

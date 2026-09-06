@@ -51,7 +51,7 @@ class CircuitBreaker:
             return False
 
 
-def retry_with_backoff(max_retries=3, base_delay=1.0, max_delay=30.0, exceptions=(Exception,)):
+def retry_with_backoff(max_retries=2, base_delay=0.5, max_delay=10.0, exceptions=(Exception,)):
     max_retries = max(1, int(max_retries or 1))
 
     def decorator(func):
@@ -64,7 +64,7 @@ def retry_with_backoff(max_retries=3, base_delay=1.0, max_delay=30.0, exceptions
                 except exceptions as e:
                     last_exception = e
                     if attempt < max_retries - 1:
-                        delay = min(base_delay * (2 ** attempt), max_delay) + random.uniform(0, 0.5)
+                        delay = min(base_delay * (2 ** attempt), max_delay) + random.uniform(0, 0.2)
                         logger.warning(f"Retry {attempt + 1}/{max_retries} after {delay:.1f}s: {e}")
                         time.sleep(delay)
             raise last_exception

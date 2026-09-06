@@ -298,7 +298,7 @@ class TokenUsageTracker:
 
     def _get_state_path(self) -> str:
         """Get path to state file."""
-        config_dir = os.path.join(os.path.expanduser("~"), ".config", "deepans_code")
+        config_dir = os.path.join(os.path.expanduser("~"), ".deepans-code")
         os.makedirs(config_dir, exist_ok=True)
         return os.path.join(config_dir, "token_usage.json")
 

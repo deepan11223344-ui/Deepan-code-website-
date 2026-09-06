@@ -77,7 +77,7 @@ def sign_manifest(data: Dict[str, Any], key: str = None) -> str:
     secret = key if key is not None else os.environ.get(PLUGIN_KEY_ENV, "")
     if not secret:
         raise ValueError(f"Set {PLUGIN_KEY_ENV} to sign plugin manifests")
-    return hmac.new(secret.encode("utf-8"), _canonical_manifest(data), hashlib.sha256).hexdigest()
+    return hmac.HMAC(secret.encode("utf-8"), _canonical_manifest(data), hashlib.sha256).hexdigest()
 
 
 def verify_manifest_signature(data: Dict[str, Any], key: str = None) -> tuple:
@@ -95,7 +95,7 @@ def verify_manifest_signature(data: Dict[str, Any], key: str = None) -> tuple:
     secret = key if key is not None else os.environ.get(PLUGIN_KEY_ENV, "")
     if not secret:
         return False, "forged"  # cannot verify in strict contexts; treat as untrusted
-    expected = hmac.new(
+    expected = hmac.HMAC(
         secret.encode("utf-8"), _canonical_manifest(data), hashlib.sha256
     ).hexdigest()
     if hmac.compare_digest(sig, expected):

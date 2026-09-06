@@ -152,7 +152,8 @@ class WorkspaceBoundary:
 
     def is_within_workspace(self, path: str) -> bool:
         try:
-            target = Path(path).resolve()
+            candidate = Path(path)
+            target = (self.workspace / candidate).resolve() if not candidate.is_absolute() else candidate.resolve()
             return target == self.workspace or self.workspace in target.parents
         except (ValueError, OSError):
             return False
@@ -161,7 +162,8 @@ class WorkspaceBoundary:
         if not path:
             return False, "", "Empty path"
         try:
-            target = Path(path).resolve()
+            candidate = Path(path)
+            target = (self.workspace / candidate).resolve() if not candidate.is_absolute() else candidate.resolve()
         except (ValueError, OSError) as e:
             return False, "", f"Invalid path: {e}"
         if self.is_within_workspace(path):

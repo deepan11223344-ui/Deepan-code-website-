@@ -31,11 +31,11 @@ sanitizer = InputSanitizer()
 MAX_SESSION_TOKENS = 2_000_000
 MAX_CONSECUTIVE_ERRORS = 5
 MAX_TOOL_OUTPUT_CHARS = 12000
-MAX_HISTORY_MESSAGES = 100  # system + last N; prevents context-window overflow
+MAX_HISTORY_MESSAGES = 20  # system + last N; prevents context-window overflow
 
 
 class Agent:
-    def __init__(self, conversation_id=None):
+    def __init__(self, conversation_id=None, database=None):
         self.messages = []
         self.total_tokens_used = 0
         self.total_prompt_tokens = 0
@@ -51,13 +51,14 @@ class Agent:
         self.current_model_id = ""
         self.current_provider_id = ""
         self.conversation_id = conversation_id
+        self.database = database or db
         self.consecutive_errors = 0
         self._inject_system_prompt()
         if conversation_id:
             self._load_conversation(conversation_id)
 
     def _load_conversation(self, conv_id):
-        messages = db.get_messages(conv_id)
+        messages = self.database.get_messages(conv_id)
         if messages:
             self.messages = []
             for m in messages:
@@ -76,8 +77,8 @@ class Agent:
             model = config_mgr.get("model", "")
             provider = config_mgr.get("provider", "")
             mode = config_mgr.get("mode", "code")
-            self.conversation_id = db.create_conversation(model=model, provider=provider, mode=mode)
-        db.save_message(self.conversation_id, role, content, tool_calls, tool_call_id)
+            self.conversation_id = self.database.create_conversation(model=model, provider=provider, mode=mode)
+        self.database.save_message(self.conversation_id, role, content, tool_calls, tool_call_id)
 
     @staticmethod
     def _sanitize(text):
@@ -378,7 +379,7 @@ class Agent:
             return
         sanitized = sanitizer.sanitize(user_input, strict=True)
         self._prepare_user_turn(sanitized)
-        max_turns = 15
+        max_turns = 3
         current_turn = 0
         tools = get_tool_schemas()
         show_thinking = config_mgr.get("thinking", True)
@@ -544,7 +545,7 @@ class Agent:
             return [("error", f"Security: prompt-injection pattern blocked ({reason[:120]}). Rephrase and retry.")]
         sanitized = sanitizer.sanitize(user_input, strict=True)
         self._prepare_user_turn(sanitized)
-        max_turns = 15
+        max_turns = 3
         current_turn = 0
         tools = get_tool_schemas()
         start_time = time.time()

@@ -99,24 +99,33 @@ class TotpVerifyIn(BaseModel):
 
 @router.post("/signup")
 def signup(body: SignupIn, request: Request, response: Response):
+    import logging
+    log = logging.getLogger("deepans_code.api")
     db = get_web_db()
     ip = client_ip(request)
+    log.info(f"Signup attempt: email={body.email}, invite_code_len={len(body.invite_code or '')}")
     if not ratelimit.check("login", f"signup:{ip}"):
+        log.warning(f"Signup rate limited: ip={ip}")
         raise HTTPException(status_code=429, detail="Too many attempts")
     if not _invite_ok(body.invite_code):
+        log.warning(f"Signup denied: bad invite or closed, ip={ip}")
         db.audit("signup_denied", None, ip, "bad invite or closed")
         raise HTTPException(status_code=403, detail="Signup not allowed")
     if not EMAIL_RE.match(body.email or ""):
+        log.warning(f"Signup invalid email: {body.email}")
         raise HTTPException(status_code=400, detail="Invalid email")
     try:
         pwd_hash, salt = hash_password(body.password)
     except ValueError as e:
+        log.warning(f"Signup password error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
     is_admin = _user_count(db) == 0  # first account owns the instance
     uid = db.create_user(body.email, pwd_hash, salt, is_admin=is_admin)
     if not uid:
+        log.warning(f"Signup email exists: {body.email}")
         raise HTTPException(status_code=409, detail="Email already registered")
     db.audit("signup", uid, ip, "account created")
+    log.info(f"Signup success: user_id={uid}, email={body.email}")
     return _issue_session(db, uid, ip, request, response)
 
 

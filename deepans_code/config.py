@@ -162,7 +162,7 @@ DEFAULT_CONFIG = {
     "mode": "code",
     "agent": "build",
     "thinking": True,
-    "theme": "default",
+    "theme": "dark",
     "connectors": {
         "openrouter": "",
         "opencode": "",
@@ -188,6 +188,7 @@ DEFAULT_CONFIG = {
         "together": "",
         "fireworks": "",
         "deepinfra": "",
+        "experientiallabs": "",
         "novita": "",
         "chutes": "",
         "siliconflow": "",
@@ -440,6 +441,7 @@ class ConfigManager:
         self._ensure_config()
         self.config = self.load()
         self.token_usage = TokenUsageManager(self.config)
+        self._runtime_api_keys = {}
         self._load_deepancode_config()
 
     def _load_deepancode_config(self):
@@ -538,6 +540,10 @@ class ConfigManager:
             provider = self.config.get("provider", "openrouter")
         provider = provider.lower()
 
+        runtime_key = self._runtime_api_keys.get(provider, "")
+        if runtime_key:
+            return runtime_key
+
         # Check environment variables first
         if provider == "openrouter":
             env_key = os.environ.get("OPENROUTER_API_KEY")
@@ -555,7 +561,11 @@ class ConfigManager:
                 try:
                     from deepans_code.security import APIKeyEncryption
                     enc = APIKeyEncryption()
-                    return enc.decrypt(key)
+                    plaintext = enc.decrypt(key)
+                    if key.startswith("enc:"):
+                        self.config.setdefault("connectors", {})[provider] = enc.encrypt(plaintext)
+                        self.save()
+                    return plaintext
                 except (ValueError, RuntimeError, OSError) as e:
                     logger.error(f"Stored API key for '{provider}' could not be decrypted: {e}")
                     return ""
@@ -564,6 +574,13 @@ class ConfigManager:
         # Plaintext Deepancode.json fallback removed: it bypassed encryption.
         # Set keys via /connect (AES-at-rest) or env vars.
         return ""
+
+    def set_runtime_api_key(self, provider, api_key):
+        """Set a temporary per-request key without writing it to config."""
+        self._runtime_api_keys[provider.lower()] = api_key.strip()
+
+    def clear_runtime_api_key(self, provider):
+        self._runtime_api_keys.pop(provider.lower(), None)
 
     def set_connector(self, provider, api_key):
         """Save API key for a provider (encrypts at rest, fail-closed)."""
